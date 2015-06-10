@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB101", "MongoDB101.csproj", "{71500518-9DE9-4B13-B23D-E849C24E4935}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{71500518-9DE9-4B13-B23D-E849C24E4935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71500518-9DE9-4B13-B23D-E849C24E4935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71500518-9DE9-4B13-B23D-E849C24E4935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71500518-9DE9-4B13-B23D-E849C24E4935}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

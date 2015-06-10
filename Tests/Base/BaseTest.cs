@@ -1,0 +1,45 @@
+﻿using System;
+using System.Configuration;
+
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Driver;
+
+using MongoDB101.Context;
+
+namespace MongoDB101.Tests
+{
+    public abstract class BaseTest
+    {
+        private const string MongoDbServerDomainKey = "MongoDbServerDomain";
+        private const string MongoDbServerPortKey = "MongoDbServerPort";
+
+        protected readonly TestContext testContext;
+
+        private static string MongoDbServerDomain
+        {
+            get { return ConfigurationManager.AppSettings[MongoDbServerDomainKey]; }
+        }
+
+        private static string MongoDbServerPort
+        {
+            get { return ConfigurationManager.AppSettings[MongoDbServerPortKey]; }
+        }
+
+        protected BaseTest()
+        {
+            SetupMappingConventions();
+
+            string connectionString = String.Format("mongodb://{0}:{1}", MongoDbServerDomain, MongoDbServerPort);
+            MongoClient mongoClient = new MongoClient(connectionString);
+
+            testContext = new TestContext(mongoClient);
+            testContext.ResetData().Wait();
+        }
+
+        private static void SetupMappingConventions()
+        {
+            ConventionPack conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
+            ConventionRegistry.Register("camelCase", conventionPack, x => true); // # For all types, apply camel case field names convention
+        }
+    }
+}
