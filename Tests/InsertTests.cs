@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Xunit;
@@ -15,8 +14,10 @@ namespace MongoDB101.Tests
 {
     public class InsertTests : BaseTest
     {
+        #region Insert (BsonDocument)
+
         [Fact]
-        public void InsertOneWithBsonDocument() // # Shell: db.<collectionName>.insert(<document>);
+        public void InsertOneBsonDocument() // # db.<collectionName>.insert(<document>);
         {
             BsonDocument bsonDocument = new BsonDocument
             {
@@ -37,7 +38,7 @@ namespace MongoDB101.Tests
         }
 
         [Fact]
-        public void InsertManyWithBsonDocument() // # Shell: db.<collectionName>.insert([<document1>, ... , <documentN>]);
+        public void InsertManyBsonDocument() // # db.<collectionName>.insert([<document1>, ... , <documentN>]);
         {
             BsonDocument bsonDocument1 = new BsonDocument
             {
@@ -67,8 +68,12 @@ namespace MongoDB101.Tests
             Console.WriteLine("Shell: db.{0}.find( {{ _id : {{ $in : [ObjectId('{1}'), ObjectId('{2}')] }} }} ).pretty();", TestContext.PeopleCollectionName, bsonDocument1["_id"], bsonDocument2["_id"]);
         }
 
+        #endregion ENDOF: Insert (BsonDocument)
+
+        #region Insert (Model)
+
         [Fact]
-        public void InsertOneWithModel()
+        public void InsertOneModel()
         {
             Person person = new Person
             {
@@ -88,7 +93,7 @@ namespace MongoDB101.Tests
         }
 
         [Fact]
-        public void InsertManyWithModel()
+        public void InsertManyModel()
         {
             List<Person> personList = new List<Person>
             {
@@ -105,7 +110,7 @@ namespace MongoDB101.Tests
         }
 
         [Fact]
-        public void InsertDuplicateKeyException()
+        public void InsertModelDuplicateKeyException()
         {
             Person person = new Person
             {
@@ -119,5 +124,7 @@ namespace MongoDB101.Tests
 
             insertFunc.ShouldThrow<MongoWriteException>().WithInnerException<MongoBulkWriteException>();
         }
+
+        #endregion ENDOF: Insert (Model)
     }
 }
