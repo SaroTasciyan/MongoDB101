@@ -34,7 +34,7 @@ namespace MongoDB101.Tests
             bsonDocument.Contains("_id").Should().BeTrue();
             bsonDocument["_id"].Should().NotBe(ObjectId.Empty);
 
-            Console.WriteLine("Shell: db.{0}.find( {{ _id : ObjectId('{1}') }} ).pretty();", TestContext.PeopleCollectionName, bsonDocument["_id"]);
+            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : ObjectId('{1}') }} ).pretty();", TestContext.PeopleCollectionName, bsonDocument["_id"]);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace MongoDB101.Tests
 
             person.Id.Should().NotBe(ObjectId.Empty);
 
-            Console.WriteLine("Shell: db.{0}.find( {{ _id : ObjectId('{1}') }} ).pretty();", TestContext.PeopleCollectionName, person.Id);
+            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : ObjectId('{1}') }} ).pretty();", TestContext.PeopleCollectionName, person.Id);
         }
 
         [Fact]

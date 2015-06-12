@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using MongoDB.Bson;
@@ -12,7 +13,9 @@ namespace MongoDB101.Context
     {
         public const string DatabaseName = "test";
         public const string PeopleCollectionName = "people";
+        public const string WidgetsCollectionName = "widgets";
 
+        private static readonly IEnumerable<BsonDocument> widgetData;
         private static readonly IEnumerable<Person> peopleData = new Person[]
         {
             new Person { Name = "Smith", Age = 30, Profession = "Hacker" },
@@ -37,6 +40,23 @@ namespace MongoDB101.Context
             get { return Database.GetCollection<Person>(PeopleCollectionName); }
         }
 
+        public IMongoCollection<BsonDocument> WidgetsAsBson
+        {
+            get { return Database.GetCollection<BsonDocument>(WidgetsCollectionName); }
+        }
+
+        public IMongoCollection<Widget> Widgets
+        {
+            get { return Database.GetCollection<Widget>(WidgetsCollectionName); }
+        }
+
+        static TestContext()
+        {
+            widgetData = Enumerable
+                .Range(0, 10)
+                .Select(x => new BsonDocument("_id", x).Add("x", x));
+        }
+
         public TestContext(IMongoClient mongoClient)
         {
             this.mongoClient = mongoClient;
@@ -46,9 +66,11 @@ namespace MongoDB101.Context
         {
             // # Delete existing data
             await Database.DropCollectionAsync(PeopleCollectionName);
+            await Database.DropCollectionAsync(WidgetsCollectionName);
 
             // # Create new data
             await People.InsertManyAsync(peopleData);
+            await WidgetsAsBson.InsertManyAsync(widgetData);
         }
     }
 }
