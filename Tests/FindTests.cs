@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,7 +24,7 @@ namespace MongoDB101.Tests
             BsonDocument filter = new BsonDocument(); // # Applying empty filter
             using (IAsyncCursor<BsonDocument> cursor = await testContext.PeopleAsBson.Find(filter).ToCursorAsync())
             {
-                while (await cursor.MoveNextAsync()) // # Retrives one batch per iteration (with record number of batch size)
+                while (await cursor.MoveNextAsync()) // # Retrieves one batch per iteration (with document number of batch size)
                 {
                     foreach (BsonDocument document in cursor.Current)
                     {
@@ -40,25 +39,16 @@ namespace MongoDB101.Tests
         }
 
         [Fact]
-        public async Task FindModelWithCursor()
+        public async Task FindBsonDocumentWithForEach()
         {
-            List<Person> personList = new List<Person>();
+            List<BsonDocument> bsonDocumentList = new List<BsonDocument>();
 
             BsonDocument filter = new BsonDocument();
-            using (IAsyncCursor<Person> cursor = await testContext.People.Find(filter).ToCursorAsync())
-            {
-                while (await cursor.MoveNextAsync()) // # Retrives one batch per iteration (with record number of batch size)
-                {
-                    foreach (Person person in cursor.Current)
-                    {
-                        personList.Add(person);
-                    }
-                }
-            }
+            await testContext.PeopleAsBson.Find(filter).ForEachAsync(x => bsonDocumentList.Add(x));
 
-            personList.Should().HaveCount(2);
-            personList.First().Name.Should().Be("Smith");
-            personList.Last().Name.Should().Be("Jones");
+            bsonDocumentList.Should().HaveCount(2);
+            bsonDocumentList.First()["name"].Should().Be("Smith");
+            bsonDocumentList.Last()["name"].Should().Be("Jones");
         }
 
         [Fact]
@@ -88,16 +78,25 @@ namespace MongoDB101.Tests
         }
 
         [Fact]
-        public async Task FindBsonDocumentWithForEach()
+        public async Task FindModelWithCursor()
         {
-            List<BsonDocument> bsonDocumentList = new List<BsonDocument>();
+            List<Person> personList = new List<Person>();
 
             BsonDocument filter = new BsonDocument();
-            await testContext.PeopleAsBson.Find(filter).ForEachAsync(x => bsonDocumentList.Add(x));
+            using (IAsyncCursor<Person> cursor = await testContext.People.Find(filter).ToCursorAsync())
+            {
+                while (await cursor.MoveNextAsync())
+                {
+                    foreach (Person person in cursor.Current)
+                    {
+                        personList.Add(person);
+                    }
+                }
+            }
 
-            bsonDocumentList.Should().HaveCount(2);
-            bsonDocumentList.First()["name"].Should().Be("Smith");
-            bsonDocumentList.Last()["name"].Should().Be("Jones");
+            personList.Should().HaveCount(2);
+            personList.First().Name.Should().Be("Smith");
+            personList.Last().Name.Should().Be("Jones");
         }
 
         [Fact]

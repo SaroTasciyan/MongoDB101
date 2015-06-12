@@ -10,14 +10,14 @@ namespace MongoDB101.Tests
 {
     public abstract class BaseTest
     {
-        private const string MongoDbServerDomainKey = "MongoDbServerDomain";
+        private const string MongoDbServerAddressKey = "MongoDbServerAddress";
         private const string MongoDbServerPortKey = "MongoDbServerPort";
 
         protected readonly TestContext testContext;
 
-        private static string MongoDbServerDomain
+        private static string MongoDbServerAddress
         {
-            get { return ConfigurationManager.AppSettings[MongoDbServerDomainKey]; }
+            get { return ConfigurationManager.AppSettings[MongoDbServerAddressKey]; }
         }
 
         private static string MongoDbServerPort
@@ -29,7 +29,7 @@ namespace MongoDB101.Tests
         {
             SetupMappingConventions();
 
-            string connectionString = String.Format("mongodb://{0}:{1}", MongoDbServerDomain, MongoDbServerPort);
+            string connectionString = String.Format("mongodb://{0}:{1}", MongoDbServerAddress, MongoDbServerPort);
             MongoClient mongoClient = new MongoClient(connectionString);
 
             testContext = new TestContext(mongoClient);

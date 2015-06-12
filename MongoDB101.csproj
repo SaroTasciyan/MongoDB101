@@ -63,7 +63,9 @@
     <Compile Include="Models\Widget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\Base\BaseTest.cs" />
+    <Compile Include="Tests\BulkWriteTests.cs" />
     <Compile Include="Tests\DeleteTests.cs" />
+    <Compile Include="Tests\FindOneTests.cs" />
     <Compile Include="Tests\FindTests.cs" />
     <Compile Include="Tests\InsertTests.cs" />
     <Compile Include="Tests\UpdateTests.cs" />

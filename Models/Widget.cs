@@ -6,7 +6,7 @@ namespace MongoDB101.Models
 {
     public class Widget
     {
-        public ObjectId Id { get; set; }
+        public int Id { get; set; }
         public int X { get; set; }
 
         public override string ToString()

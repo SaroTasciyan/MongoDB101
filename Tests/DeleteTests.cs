@@ -19,18 +19,18 @@ namespace MongoDB101.Tests
             result.IsAcknowledged.Should().BeTrue();
             result.DeletedCount.Should().Be(1); // # Deleted one element altho filter matches more than one element
 
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} ).pretty();", TestContext.WidgetsCollectionName, 6); // # Will result null
+            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 6); // # Will result null
         }
 
         [Fact]
         public async Task DeleteManyWithExpression()
         {
-            DeleteResult result = await testContext.Widgets.DeleteOneAsync(x => x.X > 5);
+            DeleteResult result = await testContext.Widgets.DeleteManyAsync(x => x.X > 5);
 
             result.IsAcknowledged.Should().BeTrue();
             result.DeletedCount.Should().BeGreaterThan(1);
 
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} ).pretty();", TestContext.WidgetsCollectionName, 6); // # Will result null
+            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 6); // # Will result null
         }
     }
 }
