@@ -14,6 +14,7 @@ namespace MongoDB101.Tests
         private const string MongoDbServerPortKey = "MongoDbServerPort";
 
         protected readonly TestContext testContext;
+        protected readonly SchoolContext schoolContext;
 
         private static string MongoDbServerAddress
         {
@@ -33,7 +34,10 @@ namespace MongoDB101.Tests
             MongoClient mongoClient = new MongoClient(connectionString);
 
             testContext = new TestContext(mongoClient);
+            schoolContext = new SchoolContext(mongoClient);
+
             testContext.ResetData().Wait();
+            schoolContext.ResetData().Wait();
         }
 
         private static void SetupMappingConventions()

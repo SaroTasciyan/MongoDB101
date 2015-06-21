@@ -82,12 +82,12 @@ namespace MongoDB101.Tests
                 Profession = "Hacker"
             };
 
-            person.Id.Should().Be(ObjectId.Empty);
+            person.Id.Should().Be(null);
 
             Func<Task> insertFunc = (async () => await testContext.People.InsertOneAsync(person));
             insertFunc.ShouldNotThrow();
 
-            person.Id.Should().NotBe(ObjectId.Empty);
+            person.Id.Should().NotBe(null).And.NotBe(String.Empty);
 
             Console.WriteLine("Shell: db.{0}.findOne( {{ _id : ObjectId('{1}') }} ).pretty();", TestContext.PeopleCollectionName, person.Id);
         }
