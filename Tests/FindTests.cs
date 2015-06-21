@@ -228,7 +228,7 @@ namespace MongoDB101.Tests
         [Fact]
         public async Task FindFilteredArrayAllWithJSONString()
         {
-            const string filter = "{ profession: { $all : [ 'pretzels', 'beer' ] } }";
+            const string filter = "{ favorites: { $all : [ 'pretzels', 'beer' ] } }";
             List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
 
             bsonDocumentList.Should().HaveCount(2);
