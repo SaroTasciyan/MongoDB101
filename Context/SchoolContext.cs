@@ -42,6 +42,9 @@ namespace MongoDB101.Context
 
             //TODO # Create new data
             // ...
+
+            //TODO # Create new indexes
+            // ...
         }
     }
 }

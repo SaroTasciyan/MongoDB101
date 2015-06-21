@@ -19,6 +19,10 @@ namespace MongoDB101.Context
         private static readonly IEnumerable<Person> peopleData = new Person[]
         {
             new Person { Name = "Smith", Age = 30, Profession = "Hacker" },
+            new Person { Name = "George", Age = 32, Favorites = new string[] { "ice cream", "pretzels" } },
+            new Person { Name = "Howard", Age = 41, Favorites = new string[] { "pretzels", "beer" } },
+            new Person { Name = "Irwing", Age = 37, Favorites = new string[] { "beer", "pretzels", "cheese" } },
+            new Person { Name = "John", Age = 33, Favorites = new string[] { "beer", "cheese" } },
             new Person { Name = "Jones", Age = 24, Profession = "Hacker" }
         };
 
@@ -71,6 +75,10 @@ namespace MongoDB101.Context
             // # Create new data
             await People.InsertManyAsync(peopleData);
             await WidgetsAsBson.InsertManyAsync(widgetData);
+
+            // # Create new indexes
+            await People.Indexes.CreateOneAsync(Builders<Person>.IndexKeys.Ascending(x => x.Name).Ascending(x => x.Age));
+            await Widgets.Indexes.CreateOneAsync(Builders<Widget>.IndexKeys.Ascending(x => x.X));
         }
     }
 }

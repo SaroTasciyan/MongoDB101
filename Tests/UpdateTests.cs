@@ -32,7 +32,7 @@ namespace MongoDB101.Tests
             result.MatchedCount.Should().Be(1);
             result.ModifiedCount.Should().Be(1);
             
-            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : {1} }} ).pretty();", TestContext.WidgetsCollectionName, filter["_id"]);
+            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : {1} }} );", TestContext.WidgetsCollectionName, filter["_id"]);
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace MongoDB101.Tests
             result.UpsertedId.Should().NotBeNull();
             result.UpsertedId.Should().Be(replacement["_id"]);
 
-            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : {1} }} ).pretty();", TestContext.WidgetsCollectionName, filter["_id"]);
+            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : {1} }} );", TestContext.WidgetsCollectionName, filter["_id"]);
         }
 
         #endregion ENDOF: Replace
@@ -88,7 +88,7 @@ namespace MongoDB101.Tests
             result.MatchedCount.Should().Be(1);
             result.ModifiedCount.Should().Be(1);
 
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} ).pretty();", TestContext.WidgetsCollectionName, updatedValue);
+            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, updatedValue);
         }
 
         [Fact]

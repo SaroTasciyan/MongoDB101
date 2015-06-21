@@ -12,6 +12,7 @@ namespace MongoDB101.Models
         public string Name { get; set; }
         public int Age { get; set; }
         public string Profession { get; set; }
+        public string[] Favorites { get; set; }
 
         public override string ToString()
         {

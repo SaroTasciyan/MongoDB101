@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Threading.Tasks;
 
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -15,6 +16,7 @@ namespace MongoDB101.Tests
 
         protected readonly TestContext testContext;
         protected readonly SchoolContext schoolContext;
+        protected readonly BlogContext blogContext;
 
         private static string MongoDbServerAddress
         {
@@ -35,9 +37,15 @@ namespace MongoDB101.Tests
 
             testContext = new TestContext(mongoClient);
             schoolContext = new SchoolContext(mongoClient);
+            blogContext = new BlogContext(mongoClient);
 
-            testContext.ResetData().Wait();
-            schoolContext.ResetData().Wait();
+            Task testContextResetDataTask = testContext.ResetData();
+            Task schoolContextResetDataTask = schoolContext.ResetData();
+            Task blogContextResetDataTask = blogContext.ResetData();
+
+            testContextResetDataTask.Wait();
+            schoolContextResetDataTask.Wait();
+            blogContextResetDataTask.Wait();
         }
 
         private static void SetupMappingConventions()
