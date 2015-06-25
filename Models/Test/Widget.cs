@@ -1,8 +1,6 @@
 ﻿using System;
 
-using MongoDB.Bson;
-
-namespace MongoDB101.Models
+namespace MongoDB101.Models.Test
 {
     public class Widget
     {

@@ -7,7 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 
 using MongoDB101.Context;
-using MongoDB101.Models;
+using MongoDB101.Models.Test;
 
 namespace MongoDB101.Tests
 {

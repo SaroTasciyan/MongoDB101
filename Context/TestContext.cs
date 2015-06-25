@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-using MongoDB101.Models;
+using MongoDB101.Models.Test;
 
 namespace MongoDB101.Context
 {
-    public class TestContext
+    public class TestContext : DbContext
     {
-        public const string DatabaseName = "test";
         public const string PeopleCollectionName = "people";
         public const string WidgetsCollectionName = "widgets";
 
@@ -26,12 +25,9 @@ namespace MongoDB101.Context
             new Person { Name = "Jones", Age = 24, Profession = "Hacker" }
         };
 
-        private readonly IMongoClient mongoClient;
-        private IMongoDatabase database;
-
-        private IMongoDatabase Database
+        protected override string DatabaseName
         {
-            get { return database ?? (database = mongoClient.GetDatabase(DatabaseName)); }
+            get { return "test"; }
         }
 
         public IMongoCollection<BsonDocument> PeopleAsBson
@@ -61,12 +57,9 @@ namespace MongoDB101.Context
                 .Select(x => new BsonDocument("_id", x).Add("x", x));
         }
 
-        public TestContext(IMongoClient mongoClient)
-        {
-            this.mongoClient = mongoClient;
-        }
+        public TestContext(IMongoClient mongoClient) : base(mongoClient) { }
 
-        public async Task ResetData()
+        public override async Task ResetData()
         {
             // # Delete existing data
             await Database.DropCollectionAsync(PeopleCollectionName);

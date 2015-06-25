@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB101.Models
+namespace MongoDB101.Models.Blog
 {
     public class Comment
     {

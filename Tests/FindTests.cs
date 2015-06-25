@@ -5,15 +5,14 @@ using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
-using MongoDB101.Models;
+using MongoDB101.Models.Blog;
+using MongoDB101.Models.Test;
 
 // ReSharper disable InconsistentNaming
 namespace MongoDB101.Tests
 {
-    //TODO # Dot Notation Tests
     public class FindTests : BaseTest
     {
         #region Find (BsonDocument)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace MongoDB101.Models
+namespace MongoDB101.Models.School
 {
     public class Student
     {

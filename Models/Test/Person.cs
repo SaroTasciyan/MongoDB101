@@ -3,7 +3,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace MongoDB101.Models
+namespace MongoDB101.Models.Test
 {
     public class Person
     {

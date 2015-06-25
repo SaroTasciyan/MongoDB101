@@ -3,21 +3,17 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-using MongoDB101.Models;
+using MongoDB101.Models.School;
 
 namespace MongoDB101.Context
 {
-    public class SchoolContext
+    public class SchoolContext : DbContext
     {
-        public const string DatabaseName = "school";
         public const string StudentsCollectionName = "students";
 
-        private readonly IMongoClient mongoClient;
-        private IMongoDatabase database;
-
-        private IMongoDatabase Database
+        protected override string DatabaseName
         {
-            get { return database ?? (database = mongoClient.GetDatabase(DatabaseName)); }
+            get { return "school"; }
         }
 
         public IMongoCollection<BsonDocument> StudentsAsBson
@@ -30,12 +26,9 @@ namespace MongoDB101.Context
             get { return Database.GetCollection<Student>(StudentsCollectionName); }
         }
 
-        public SchoolContext(IMongoClient mongoClient)
-        {
-            this.mongoClient = mongoClient;
-        }
-        
-        public async Task ResetData()
+        public SchoolContext(IMongoClient mongoClient) : base(mongoClient) { }
+
+        public override async Task ResetData()
         {
             // # Delete existing data
             await Database.DropCollectionAsync(StudentsCollectionName);

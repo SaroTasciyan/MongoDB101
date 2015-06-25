@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-using MongoDB101.Models;
+using MongoDB101.Models.Blog;
 
 namespace MongoDB101.Context
 {
-    public class BlogContext
+    public class BlogContext : DbContext
     {
-        public const string DatabaseName = "blog";
         public const string PostsCollectionName = "posts";
         public const string UsersCollectionName = "users";
 
@@ -58,12 +57,9 @@ namespace MongoDB101.Context
             }
         };
 
-        private readonly IMongoClient mongoClient;
-        private IMongoDatabase database;
-
-        private IMongoDatabase Database
+        protected override string DatabaseName
         {
-            get { return database ?? (database = mongoClient.GetDatabase(DatabaseName)); }
+            get { return "blog"; }
         }
 
         public IMongoCollection<BsonDocument> PostsAsBson
@@ -86,12 +82,9 @@ namespace MongoDB101.Context
             get { return Database.GetCollection<User>(UsersCollectionName); }
         }
 
-        public BlogContext(IMongoClient mongoClient)
-        {
-            this.mongoClient = mongoClient;
-        }
+        public BlogContext(IMongoClient mongoClient) : base(mongoClient) { }
         
-        public async Task ResetData()
+        public override async Task ResetData()
         {
             // # Delete existing data
             await Database.DropCollectionAsync(PostsCollectionName);
