@@ -6,9 +6,9 @@ using Xunit;
 using FluentAssertions;
 
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
+using MongoDB101.Models.Blog;
 using MongoDB101.Models.Inventory;
 
 // ReSharper disable InconsistentNaming
@@ -427,7 +427,7 @@ namespace MongoDB101.Tests
                 },
                 { "item", "$name" },
             };
-
+            
             List<BsonDocument> products = await inventoryContext.ProductsAsBson.Aggregate()
                .Project(groupProjection)
                .ToListAsync();
@@ -467,5 +467,256 @@ namespace MongoDB101.Tests
         }
 
         #endregion ENDOF: Project
+
+        #region Match
+
+        [Fact]
+        public async Task MatchWithBsonDocument()
+        {
+            BsonDocument filter = new BsonDocument { { "manufacturer", "Apple" } };
+
+            List<BsonDocument> products = await inventoryContext.ProductsAsBson.Aggregate()
+               .Match(filter)
+               .ToListAsync();
+
+            products.Should().HaveCount(4);
+            products.First()["manufacturer"].Should().Be("Apple");
+            products.Last()["manufacturer"].Should().Be("Apple");
+        }
+
+        [Fact]
+        public async Task MatchWithExpressionTree()
+        {
+            List<Product> products = await inventoryContext.Products.Aggregate()
+                .Match(x => x.Manufacturer == "Apple")
+                .ToListAsync();
+
+            products.Should().HaveCount(4);
+            products.First().Manufacturer.Should().Be("Apple");
+            products.Last().Manufacturer.Should().Be("Apple");
+        }
+
+        #endregion ENDOF: Match
+
+        #region Sort
+
+        [Fact]
+        public async Task SortWithBsonDocument()
+        {
+            BsonDocument sortDefinition = new BsonDocument { { "price", -1 } };
+
+            List<BsonDocument> products = await inventoryContext.ProductsAsBson.Aggregate()
+               .Sort(sortDefinition)
+               .ToListAsync();
+
+            products.Should().HaveCount(10);
+            products.First()["price"].Should().Be(699);
+            products.Last()["price"].Should().Be(129);
+        }
+
+        [Fact]
+        public async Task SortWithExpressionTree()
+        {
+            List<Product> products = await inventoryContext.Products.Aggregate()
+                .SortByDescending(x => x.Price)
+                .ToListAsync();
+
+            products.Should().HaveCount(10);
+            products.First().Price.Should().Be(699);
+            products.Last().Price.Should().Be(129);
+        }
+
+
+        [Fact]
+        public async Task SortMultiFieldsWithBsonDocument()
+        {
+            BsonDocument sortDefinition = new BsonDocument
+            {
+                { "category", 1 },
+                { "price", -1 }
+            };
+
+            List<BsonDocument> products = await inventoryContext.ProductsAsBson.Aggregate()
+               .Sort(sortDefinition)
+               .ToListAsync();
+
+            products.Should().HaveCount(10);
+            products.First()["category"].Should().Be("Cell Phones");
+            products.First()["price"].Should().Be(563);
+            products.Last()["category"].Should().Be("Tablets");
+            products.Last()["price"].Should().Be(129);
+        }
+
+        [Fact]
+        public async Task SortMultiFieldWithExpressionTree()
+        {
+            List<Product> products = await inventoryContext.Products.Aggregate()
+                .SortBy(x => x.Category)
+                .ThenByDescending(x => x.Price)
+                .ToListAsync();
+
+            products.Should().HaveCount(10);
+            products.First().Category.Should().Be("Cell Phones");
+            products.First().Price.Should().Be(563);
+            products.Last().Category.Should().Be("Tablets");
+            products.Last().Price.Should().Be(129);
+        }
+
+        #endregion ENDOF: Sort
+
+        #region Skip and Limit
+
+        [Fact]
+        public async Task SkipAndLimitWithBsonDocument()
+        {
+            BsonDocument sortDefinition = new BsonDocument { { "price", -1 } };
+
+            List<BsonDocument> products = await inventoryContext.ProductsAsBson.Aggregate()
+               .Sort(sortDefinition)
+               .Skip(1)
+               .Limit(1)
+               .ToListAsync();
+
+            products.Should().HaveCount(1);
+            products.First()["price"].Should().Be(599);
+        }
+
+        [Fact]
+        public async Task SkipAndLimitWithExpressionTree()
+        {
+            List<Product> products = await inventoryContext.Products.Aggregate()
+                .SortByDescending(x => x.Price)
+                .Skip(1)
+                .Limit(1)
+                .ToListAsync();
+
+            products.Should().HaveCount(1);
+            products.First().Price.Should().Be(599);
+        }
+
+        #endregion ENDOF: Skip and Limit
+
+        #region First and Last
+
+        [Fact]
+        public async Task FirstWithBsonDocument()
+        {
+            BsonDocument sortDefinition = new BsonDocument
+            {
+                { "category", 1 },
+                { "price", -1 }
+            };
+
+            BsonDocument group = new BsonDocument
+            {
+                { "_id", "$category" },
+                { "price", new BsonDocument { { "$first", "$price" } } },
+            };
+
+            List<BsonDocument> products = await inventoryContext.ProductsAsBson.Aggregate()
+               .Sort(sortDefinition)
+               .Group(group)
+               .ToListAsync();
+
+            products.Should().HaveCount(3);
+            products.First()["_id"].Should().Be("Tablets");
+            products.First()["price"].Should().Be(699);
+            products.Last()["_id"].Should().Be("Cell Phones");
+            products.Last()["price"].Should().Be(563);
+        }
+
+        [Fact]
+        public async Task FirstWithExpressionTree()
+        {
+            var products = await inventoryContext.Products.Aggregate()
+                .SortBy(x => x.Category)
+                .ThenByDescending(x => x.Price)
+                .Group(x => x.Category, g => new { Id = g.Key, Price = g.First().Price })
+                .ToListAsync();
+
+            products.Should().HaveCount(3);
+            products.First().Id.Should().Be("Tablets");
+            products.First().Price.Should().Be(699);
+            products.Last().Id.Should().Be("Cell Phones");
+            products.Last().Price.Should().Be(563);
+        }
+
+        [Fact]
+        public async Task LastWithBsonDocument()
+        {
+            BsonDocument sortDefinition = new BsonDocument
+            {
+                { "category", 1 },
+                { "price", -1 }
+            };
+
+            BsonDocument group = new BsonDocument
+            {
+                { "_id", "$category" },
+                { "price", new BsonDocument { { "$last", "$price" } } },
+            };
+
+            List<BsonDocument> products = await inventoryContext.ProductsAsBson.Aggregate()
+               .Sort(sortDefinition)
+               .Group(group)
+               .ToListAsync();
+
+            products.Should().HaveCount(3);
+            products.First()["_id"].Should().Be("Tablets");
+            products.First()["price"].Should().Be(129);
+            products.Last()["_id"].Should().Be("Cell Phones");
+            products.Last()["price"].Should().Be(563);
+        }
+
+        [Fact]
+        public async Task LastWithExpressionTree()
+        {
+            var products = await inventoryContext.Products.Aggregate()
+                .SortBy(x => x.Category)
+                .ThenByDescending(x => x.Price)
+                .Group(x => x.Category, g => new { Id = g.Key, Price = g.Last().Price })
+                .ToListAsync();
+
+            products.Should().HaveCount(3);
+            products.First().Id.Should().Be("Tablets");
+            products.First().Price.Should().Be(129);
+            products.Last().Id.Should().Be("Cell Phones");
+            products.Last().Price.Should().Be(563);
+        }
+
+        #endregion ENDOF: First and Last
+
+        #region Unwind
+
+        [Fact]
+        public async Task UnwindWithBsonDocument()
+        {
+            List<BsonDocument> posts = await blogContext.PostsAsBson.Aggregate()
+               .Unwind("tags")
+               .ToListAsync();
+
+            posts.Should().HaveCount(9);
+            posts.First()["author"].Should().Be("Joel Spolsky");
+            posts.First()["tags"].Should().Be("Software Development");
+            posts.Last()["author"].Should().Be("Eric Lippert");
+            posts.Last()["tags"].Should().Be("LINQ");
+        }
+
+        [Fact(Skip="Does not work: System.Linq First() method is not supported for projection operations")]
+        public async Task UnwindWithExpressionTree()
+        {
+            var posts = await blogContext.Posts.Aggregate()
+               .Unwind<Post, Post>(x => x.Tags)
+               .Project(x => new { Author = x.Author, Tag = x.Tags.First() })
+               .ToListAsync();
+
+            posts.Should().HaveCount(9);
+            posts.First().Author.Should().Be("Joel Spolsky");
+            posts.First().Tag.Should().Be("Software Development");
+            posts.Last().Author.Should().Be("Eric Lippert");
+            posts.Last().Tag.Should().Be("LINQ");
+        }
+
+        #endregion ENDOF: Unwind
     }
 }

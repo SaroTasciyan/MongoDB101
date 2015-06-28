@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Configuration;
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 
 using MongoDB.Bson.Serialization.Conventions;
@@ -36,6 +38,9 @@ namespace MongoDB101.Tests
 
         protected BaseTest()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+
             SetupMappingConventions();
 
             string connectionString = String.Format("mongodb://{0}:{1}", MongoDbServerAddress, MongoDbServerPort);
