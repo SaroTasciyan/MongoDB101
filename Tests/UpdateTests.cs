@@ -6,7 +6,6 @@ using FluentAssertions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-using MongoDB101.Context;
 using MongoDB101.Models.Test;
 
 namespace MongoDB101.Tests
@@ -31,8 +30,6 @@ namespace MongoDB101.Tests
             result.IsModifiedCountAvailable.Should().BeTrue();
             result.MatchedCount.Should().Be(1);
             result.ModifiedCount.Should().Be(1);
-            
-            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : {1} }} );", TestContext.WidgetsCollectionName, filter["_id"]);
         }
 
         [Fact]
@@ -47,8 +44,6 @@ namespace MongoDB101.Tests
 
             Func<Task> insertFunc = (async () => await testContext.WidgetsAsBson.ReplaceOneAsync(filter, replacement));
             insertFunc.ShouldThrow<MongoWriteException>("Id can not be changed!");
-            
-            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : {1} }} );", TestContext.WidgetsCollectionName, replacement["_id"]); // # Will result null
         }
 
         [Fact]
@@ -68,8 +63,6 @@ namespace MongoDB101.Tests
             result.ModifiedCount.Should().Be(0);
             result.UpsertedId.Should().NotBeNull();
             result.UpsertedId.Should().Be(replacement["_id"]);
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : {1} }} );", TestContext.WidgetsCollectionName, filter["_id"]);
         }
 
         #endregion ENDOF: Replace
@@ -87,8 +80,6 @@ namespace MongoDB101.Tests
 
             result.MatchedCount.Should().Be(1);
             result.ModifiedCount.Should().Be(1);
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, updatedValue);
         }
 
         [Fact]
@@ -101,8 +92,6 @@ namespace MongoDB101.Tests
 
             result.MatchedCount.Should().Be(1);
             result.ModifiedCount.Should().Be(1);
-
-            Console.WriteLine("Shell: db.{0}.find().pretty();", TestContext.WidgetsCollectionName);
         }
 
         [Fact]
@@ -115,8 +104,6 @@ namespace MongoDB101.Tests
 
             result.MatchedCount.Should().Be(1); // # Only modified one document altho filter matched more than one document
             result.ModifiedCount.Should().Be(1);
-
-            Console.WriteLine("Shell: db.{0}.find().pretty();", TestContext.WidgetsCollectionName);
         }
 
         [Fact]
@@ -129,8 +116,6 @@ namespace MongoDB101.Tests
 
             result.MatchedCount.Should().BeGreaterThan(1);
             result.ModifiedCount.Should().BeGreaterThan(1);
-
-            Console.WriteLine("Shell: db.{0}.find().pretty();", TestContext.WidgetsCollectionName);
         }
 
         #endregion ENDOF: Update (BsonDocument)
@@ -146,8 +131,6 @@ namespace MongoDB101.Tests
 
             result.MatchedCount.Should().Be(1);
             result.ModifiedCount.Should().Be(1);
-
-            Console.WriteLine("Shell: db.{0}.find().pretty();", TestContext.WidgetsCollectionName);
         }
 
         #endregion ENDOF: Update (Model)

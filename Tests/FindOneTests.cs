@@ -20,8 +20,6 @@ namespace MongoDB101.Tests
             Widget result = await testContext.Widgets.FindOneAndUpdateAsync(x => x.X > 5, replacement);
 
             result.X.Should().Be(6); // # X value of updated Widget instance, before update.
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 6); // # Will result null
         }
 
         [Fact]
@@ -33,8 +31,6 @@ namespace MongoDB101.Tests
             Widget result = await testContext.Widgets.FindOneAndUpdateAsync<Widget>(x => x.X > 5, replacement, findOneAndUpdateOptions);
 
             result.X.Should().Be(7); // # X value of updated Widget instance, after update.
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 6); // # Will result null
         }
 
         [Fact]
@@ -46,8 +42,6 @@ namespace MongoDB101.Tests
             Widget result = await testContext.Widgets.FindOneAndReplaceAsync<Widget>(x => x.X > 5, widget, findOneAndReplaceOptions);
 
             result.X.Should().Be(widget.X);
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 6); // # Will result null
         }
 
         [Fact]
@@ -59,8 +53,6 @@ namespace MongoDB101.Tests
             };
 
             await testContext.Widgets.FindOneAndDeleteAsync<Widget>(x => x.X > 5, findOneAndReplaceOptions);
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 9); // # Will result null
         }
     }
 }

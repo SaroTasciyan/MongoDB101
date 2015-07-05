@@ -7,7 +7,6 @@ using FluentAssertions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-using MongoDB101.Context;
 using MongoDB101.Models.Test;
 
 namespace MongoDB101.Tests
@@ -33,8 +32,6 @@ namespace MongoDB101.Tests
 
             bsonDocument.Contains("_id").Should().BeTrue();
             bsonDocument["_id"].Should().NotBe(ObjectId.Empty);
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : ObjectId('{1}') }} ).pretty();", TestContext.PeopleCollectionName, bsonDocument["_id"]);
         }
 
         [Fact]
@@ -64,8 +61,6 @@ namespace MongoDB101.Tests
             bsonDocument2.Contains("_id").Should().BeTrue();
             bsonDocument1["_id"].Should().NotBe(ObjectId.Empty);
             bsonDocument2["_id"].Should().NotBe(ObjectId.Empty);
-
-            Console.WriteLine("Shell: db.{0}.find( {{ _id : {{ $in : [ObjectId('{1}'), ObjectId('{2}')] }} }} ).pretty();", TestContext.PeopleCollectionName, bsonDocument1["_id"], bsonDocument2["_id"]);
         }
 
         #endregion ENDOF: Insert (BsonDocument)
@@ -88,8 +83,6 @@ namespace MongoDB101.Tests
             insertFunc.ShouldNotThrow();
 
             person.Id.Should().NotBe(null).And.NotBe(String.Empty);
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ _id : ObjectId('{1}') }} ).pretty();", TestContext.PeopleCollectionName, person.Id);
         }
 
         [Fact]
@@ -105,8 +98,6 @@ namespace MongoDB101.Tests
             insertFunc.ShouldNotThrow();
             
             personList.ForEach(x => x.Should().NotBe(ObjectId.Empty));
-
-            Console.WriteLine("Shell: db.{0}.find( {{ _id : {{ $in : [ObjectId('{1}'), ObjectId('{2}')] }} }} ).pretty();", TestContext.PeopleCollectionName, personList[0].Id, personList[1].Id);
         }
 
         [Fact]

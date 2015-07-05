@@ -18,7 +18,7 @@ namespace MongoDB101.Tests
         #region Find (BsonDocument)
 
         [Fact]
-        public async Task FindBsonDocumentWithCursor() // # db.<collectionName>.find()
+        public async Task FindBsonDocumentWithCursor()
         {
             List<BsonDocument> bsonDocumentList = new List<BsonDocument>();
 
@@ -118,7 +118,7 @@ namespace MongoDB101.Tests
         #region Find Filtered (BsonDocument)
 
         [Fact]
-        public async Task FindFilteredWithBsonDocument() // # db.<collectionName>.find(<document>)
+        public async Task FindFilteredWithBsonDocument()
         {
             BsonDocument filter = new BsonDocument("name", "Smith");
             List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
@@ -128,34 +128,13 @@ namespace MongoDB101.Tests
         }
 
         [Fact]
-        public async Task FindFilteredWithJSONString() 
-        {
-            const string filter = "{ name: 'Smith' }";
-            List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
-
-            bsonDocumentList.Should().HaveCount(1);
-            bsonDocumentList.First()["name"].Should().Be("Smith");
-        }
-
-        [Fact]
-        public async Task FindFilteredArrayWithSJONString()
-        {
-            const string filter = "{ tags: 'LINQ' }";
-            List<BsonDocument> bsonDocumentList = await blogContext.PostsAsBson.Find(filter).ToListAsync();
-
-            bsonDocumentList.Should().HaveCount(2);
-            bsonDocumentList.First()["title"].Should().Be("Query Expression Syntax");
-            bsonDocumentList.Last()["title"].Should().Be("Computing a Cartesian Product");
-        }
-
-        [Fact]
         public async Task FindFilteredWithNestedBsonDocument()
         {
             BsonDocument filter = new BsonDocument("$and", new BsonArray
             {
                 new BsonDocument("age", new BsonDocument("$lt", 30)),
                 new BsonDocument("name", "Smith")
-            }); // # (age < 30 && name == "Smith")
+            });
 
             List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
 
@@ -187,7 +166,7 @@ namespace MongoDB101.Tests
         [Fact]
         public async Task FindFilteredExistsWithJSONString()
         {
-            const string filter = "{ profession: { $exists : true } }"; // # Profession field exists
+            const string filter = "{ profession: { $exists : true } }";
             List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
 
             bsonDocumentList.Should().HaveCount(6);
@@ -207,32 +186,12 @@ namespace MongoDB101.Tests
         }
 
         [Fact]
-        public async Task FindFilteredRegexWithJSONString()
-        {
-            const string filter = "{ name: { $regex : '^[A-Z][a-z]{4}$' } }";
-            List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
-
-            bsonDocumentList.Should().HaveCount(2);
-        }
-
-        [Fact]
         public async Task FindFilteredRegexWithBuilder()
         {
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Regex("name", new BsonRegularExpression("^[A-Z][a-z]{4}$"));
             List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
 
             bsonDocumentList.Should().HaveCount(2);
-        }
-
-        [Fact]
-        public async Task FindFilteredArrayAllWithJSONString()
-        {
-            const string filter = "{ favorites: { $all : [ 'pretzels', 'beer' ] } }";
-            List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
-
-            bsonDocumentList.Should().HaveCount(2);
-            bsonDocumentList.First()["name"].Should().Be("Howard");
-            bsonDocumentList.Last()["name"].Should().Be("Irwing");
         }
 
         [Fact]
@@ -244,17 +203,6 @@ namespace MongoDB101.Tests
             bsonDocumentList.Should().HaveCount(2);
             bsonDocumentList.First()["name"].Should().Be("Howard");
             bsonDocumentList.Last()["name"].Should().Be("Irwing");
-        }
-
-        [Fact]
-        public async Task FindFilteredArrayInWithJSONString()
-        {
-            const string filter = "{ name: { $in : [ 'Howard', 'John' ] } }";
-            List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson.Find(filter).ToListAsync();
-
-            bsonDocumentList.Should().HaveCount(2);
-            bsonDocumentList.First()["name"].Should().Be("Howard");
-            bsonDocumentList.Last()["name"].Should().Be("John");
         }
 
         [Fact]
@@ -365,26 +313,12 @@ namespace MongoDB101.Tests
         #region Find Sorted (BsonDocument)
 
         [Fact]
-        public async Task FindSortedWithBsonDocument() // # db.<collectionName>.find().sort(<document>)
+        public async Task FindSortedWithBsonDocument()
         {
             BsonDocument filter = new BsonDocument();
             List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson
                 .Find(filter)
                 .Sort(new BsonDocument("age", 1))
-                .ToListAsync();
-
-            bsonDocumentList.Should().HaveCount(6);
-            bsonDocumentList.First()["name"].Should().Be("Jones");
-            bsonDocumentList.Last()["name"].Should().Be("Howard");
-        }
-
-        [Fact]
-        public async Task FindSortedWithJSONString()
-        {
-            BsonDocument filter = new BsonDocument();
-            List<BsonDocument> bsonDocumentList = await testContext.PeopleAsBson
-                .Find(filter)
-                .Sort("{ age : 1 }") // # Sort by age ascending
                 .ToListAsync();
 
             bsonDocumentList.Should().HaveCount(6);
@@ -478,24 +412,6 @@ namespace MongoDB101.Tests
             List<BsonDocument> personList = await testContext.People
                 .Find(filter)
                 .Project(new BsonDocument("name", true).Add("_id", false))
-                .ToListAsync();
-
-            personList.Should().HaveCount(6);
-
-            personList.All(x => x.Contains("name")).Should().BeTrue();
-            personList.Any(x => x.Contains("_id")).Should().BeFalse();
-
-            personList.First()["name"].Should().Be("Smith");
-            personList.Last()["name"].Should().Be("Jones");
-        }
-
-        [Fact]
-        public async Task FindProjectionWithJSONString()
-        {
-            BsonDocument filter = new BsonDocument();
-            List<BsonDocument> personList = await testContext.People
-                .Find(filter)
-                .Project("{ name : true, _id : false }")
                 .ToListAsync();
 
             personList.Should().HaveCount(6);

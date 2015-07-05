@@ -18,8 +18,6 @@ namespace MongoDB101.Tests
             
             result.IsAcknowledged.Should().BeTrue();
             result.DeletedCount.Should().Be(1); // # Deleted one element altho filter matches more than one element
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 6); // # Will result null
         }
 
         [Fact]
@@ -29,8 +27,6 @@ namespace MongoDB101.Tests
 
             result.IsAcknowledged.Should().BeTrue();
             result.DeletedCount.Should().BeGreaterThan(1);
-
-            Console.WriteLine("Shell: db.{0}.findOne( {{ x : {1} }} );", TestContext.WidgetsCollectionName, 6); // # Will result null
         }
     }
 }

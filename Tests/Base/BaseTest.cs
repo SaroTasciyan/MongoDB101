@@ -12,10 +12,6 @@ using MongoDB101.Context;
 namespace MongoDB101.Tests
 {
     //TODO: Add profiling option for MongoDb.Driver generated query shell syntax
-    //TODO: Add samples from;
-    // http://docs.mongodb.org/manual/reference/sql-comparison/
-    // http://docs.mongodb.org/manual/reference/sql-aggregation-comparison/
-    
     public abstract class BaseTest
     {
         private const string MongoDbServerAddressKey = "MongoDbServerAddress";

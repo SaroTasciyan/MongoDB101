@@ -32,12 +32,30 @@ namespace MongoDB101
 
         public static async Task<List<TDocument>> ToListAsync<TDocument>(this IAsyncCursorSource<TDocument> source, CancellationToken cancellationToken)
         {
-            Console.WriteLine(source);
+            source.Profile();
 
             return await IAsyncCursorSourceExtensions.ToListAsync(source, cancellationToken);
         }
 
         #endregion ENDOF: ToListAsync
+
+        #region ForEachAsync
+
+        public static async Task ForEachAsync<TDocument>(this IAsyncCursorSource<TDocument> source, Action<TDocument> processor)
+        {
+            source.Profile();
+
+            await IAsyncCursorSourceExtensions.ForEachAsync(source, processor);
+        }
+
+        public static async Task ForEachAsync<TDocument>(this IAsyncCursorSource<TDocument> source, Action<TDocument> processor, CancellationToken cancellationToken)
+        {
+            source.Profile();
+
+            await IAsyncCursorSourceExtensions.ForEachAsync(source, processor, cancellationToken);
+        }
+
+        #endregion ENDOF: ForEachAsync
 
         #region Helpers
 
@@ -50,13 +68,13 @@ namespace MongoDB101
                 bool isAnonymousOrBsonDocument = (source is IAsyncCursorSource<BsonDocument> || IsAnonymous<TDocument>());
                 string collection = isAnonymousOrBsonDocument ? "<collection>" : GetCollectionName(type.Name);
 
-                Console.WriteLine("*** Generated Query - Single Line *** \ndb.{0}.{1};\n", collection, source);
+                Console.WriteLine("*** Generated Query *** \ndb.{0}.{1};\n", collection, source);
 
                 string indentedQueryShellSytax = GetIndentedQueryShellSyntax(source);
 
                 if (source.ToString() != indentedQueryShellSytax)
                 {
-                    Console.WriteLine("*** Generated Query - Multi Line *** \ndb.{0}.{1};", collection, indentedQueryShellSytax);
+                    Console.WriteLine("*** Generated Query (Pretty) *** \ndb.{0}.{1};", collection, indentedQueryShellSytax);
                 }
             }
             catch { /* # Ignored */ }
