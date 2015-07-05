@@ -11,7 +11,6 @@ using MongoDB101.Context;
 
 namespace MongoDB101.Tests
 {
-    //TODO: Add profiling option for MongoDb.Driver generated query shell syntax
     public abstract class BaseTest
     {
         private const string MongoDbServerAddressKey = "MongoDbServerAddress";
@@ -34,10 +33,9 @@ namespace MongoDB101.Tests
 
         protected BaseTest()
         {
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-
+            SetupCultureInfo();
             SetupMappingConventions();
+            SetupProfiler();
 
             string connectionString = String.Format("mongodb://{0}:{1}", MongoDbServerAddress, MongoDbServerPort);
             MongoClient mongoClient = new MongoClient(connectionString);
@@ -58,10 +56,22 @@ namespace MongoDB101.Tests
             inventoryContextResetDataTask.Wait();
         }
 
+        private static void SetupCultureInfo()
+        {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+        }
+
         private static void SetupMappingConventions()
         {
             ConventionPack conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
             ConventionRegistry.Register("camelCase", conventionPack, x => true); // # For all types, apply camel case field names convention
+        }
+
+        private static void SetupProfiler()
+        {
+            Profiler.Formatting = (Profiler.Options.Formatting.SingleLine | Profiler.Options.Formatting.Pretty);
+            Profiler.Output = Profiler.Options.Output.Conventional;
         }
     }
 }

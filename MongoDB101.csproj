@@ -29,6 +29,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Profile|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Profile\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PROFILING_ENABLED</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FluentAssertions">
       <HintPath>packages\FluentAssertions.3.3.0\lib\net45\FluentAssertions.dll</HintPath>
@@ -76,7 +85,8 @@
     <Compile Include="Models\School\Student.cs" />
     <Compile Include="Models\Blog\User.cs" />
     <Compile Include="Models\Test\Widget.cs" />
-    <Compile Include="Profiling\ProfilingExtensions.cs" />
+    <Compile Include="Profiler\Profiler.cs" />
+    <Compile Include="Profiler\ProfilingExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\AggregationTests.cs" />
     <Compile Include="Tests\Base\BaseTest.cs" />

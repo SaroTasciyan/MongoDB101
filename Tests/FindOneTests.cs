@@ -1,11 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using Xunit;
 using FluentAssertions;
 using MongoDB.Driver;
 
-using MongoDB101.Context;
 using MongoDB101.Models.Test;
 
 namespace MongoDB101.Tests
